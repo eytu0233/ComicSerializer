@@ -37,8 +37,6 @@ public class JsonReceiveTask {
             while ((inputStr = streamReader.readLine()) != null)
                 responseStrBuilder.append(inputStr);
 
-            Log.d("Json", inputStr);
-
         } catch (ConnectException e) {
             // TODO Auto-generated catch block
             Log.e(DEBUG_FLAG, "網頁連線逾時");

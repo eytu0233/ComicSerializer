@@ -3,28 +3,22 @@ package myapp.comicserializer;
 import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
-import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.FrameLayout;
 import android.widget.GridLayout;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -56,20 +50,52 @@ public class MainActivity extends AppCompatActivity {
         (new Handler()).postDelayed(new Runnable() {
             @Override
             public void run() {
+
+                EpisodeJsonReaderTask episodeJsonReaderTask = new EpisodeJsonReaderTask(context);
+                episodeJsonReaderTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                try {
+                    Map<String, Integer> episodeMap = episodeJsonReaderTask.get();
+                    if(episodeMap != null) {
+                        progressBar.setVisibility(View.INVISIBLE);
+                        for(String key : episodeMap.keySet()){
+                            if("ASJS".equals(key)){
+                                frameLayout.addView(new ComicCoverLayout(context, key, episodeMap.get(key), R.drawable.asjs));
+                            }else if("OnePiece".equals(key)){
+                                frameLayout.addView(new ComicCoverLayout(context, key, episodeMap.get(key), R.drawable.onepiece));
+                            }else if("SJZL".equals(key)){
+                                frameLayout.addView(new ComicCoverLayout(context, key, episodeMap.get(key), R.drawable.sjzl));
+                            }else if("WDYXXY".equals(key)){
+                                frameLayout.addView(new ComicCoverLayout(context, key, episodeMap.get(key), R.drawable.wdyxxy));
+                            }else if("YJDWB".equals(key)){
+                                frameLayout.addView(new ComicCoverLayout(context, key, episodeMap.get(key), R.drawable.yjdwb));
+                            }else{
+                                frameLayout.addView(new ComicCoverLayout(context, key, episodeMap.get(key), R.drawable.sjzl));
+                            }
+
+                        }
+                       return;
+                    }
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                }
+
                 progressBar.setVisibility(View.INVISIBLE);
-                frameLayout.addView(new ComicCoverLayout(context, "食戟之靈", "102", R.drawable.souma));
             }
         }, 2000);
 
-        final SharedPreferences SP = PreferenceManager
+        /*final SharedPreferences SP = PreferenceManager
                 .getDefaultSharedPreferences(this);
+        final SharedPreferences.Editor SPE = SP.edit();
         Set<String> comicSet = new HashSet<String>();
         comicSet.add("WDYXXY");
         comicSet.add("OnePiece");
         comicSet.add("YJDWB");
         comicSet.add("ASJS");
         comicSet.add("SJZL");
-        SP.getStringSet(COMIC_SET_KEY, comicSet);
+        SPE.putStringSet(COMIC_SET_KEY, comicSet);
+        SPE.apply();*/
 
         if (!isServiceRunning(NetworkListenerService.class)) {
             if (startService(new Intent(this, NetworkListenerService.class)) != null) {

@@ -45,7 +45,7 @@ public class EpisodeJsonReceiveTask extends JsonReceiveTask implements Runnable 
         final SharedPreferences SP = PreferenceManager
                 .getDefaultSharedPreferences(mContext);
         Set<String> comic_set = new HashSet<String>();
-        SP.getStringSet(COMIC_SET_KEY, comic_set);
+        comic_set = SP.getStringSet(COMIC_SET_KEY, comic_set);
         for(String comic_name : comic_set){
             episodeMap.put(comic_name, Integer.parseInt(jsonObject.getString(comic_name)));
             Log.d(DEBUG_FLAG, comic_name + " : " + episodeMap.get(comic_name));

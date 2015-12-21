@@ -13,7 +13,7 @@ public class ComicCoverLayout extends FrameLayout {
     private ImageView comic_cover_img;
     private TextView comic_cover, comic_episode;
 
-    public ComicCoverLayout(Context context, String title, String episode, int cover_img_resource) {
+    public ComicCoverLayout(Context context, String title, int episode, int cover_img_resource) {
         super(context);
         init(context);
         setComic_title(title);
@@ -34,7 +34,7 @@ public class ComicCoverLayout extends FrameLayout {
         comic_cover.setText(comic_title);
     }
 
-    private void setComic_episode(String episode){
+    private void setComic_episode(int episode){
         comic_episode.setText(episode + "話");
     }
 
